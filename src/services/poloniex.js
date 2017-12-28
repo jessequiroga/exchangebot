@@ -2,92 +2,59 @@ import HttpStatusCodes from 'http-status-codes'
 
 import {request, HttpMethods} from './request'
 
-const POLONIEX_API_HOST = 'https://poloniex.com/public'
+const POLONIEX_API_URL = 'https://poloniex.com/public'
 
-async function returnTicker() {
+async function _query(command, params) {
   const {statusCode, body} = await request({
-    url: POLONIEX_API_HOST,
+    url: POLONIEX_API_URL,
     method: HttpMethods.GET,
     qs: {
-      command: 'returnTicker'
+      command,
+      ...params
     }
   })
 
   if (statusCode !== HttpStatusCodes.OK) {
-    throw new Error('Fail to call /returnTicker')
+    throw new Error(`Fail to call /${command} code ${statusCode}`)
   }
 
   return body
+}
+
+async function returnTicker() {
+  const result = await _query('returnTicker')
+
+  return result
 }
 
 async function return24Volume() {
-  const {statusCode, body} = await request({
-    url: POLONIEX_API_HOST,
-    method: HttpMethods.GET,
-    qs: {
-      command: 'return24Volume'
-    }
-  })
+  const result = await _query('return24Volume')
 
-  if (statusCode !== HttpStatusCodes.OK) {
-    throw new Error('Fail to call /return24Volume')
-  }
-
-  return body
+  return result
 }
 
 async function returnOrderBook(currencyPair) {
-  const {statusCode, body} = await request({
-    url: POLONIEX_API_HOST,
-    method: HttpMethods.GET,
-    qs: {
-      command: 'returnOrderBook',
-      currencyPair
-    }
-  })
+  const result = await _query('returnOrderBook', {currencyPair})
 
-  if (statusCode !== HttpStatusCodes.OK) {
-    throw new Error('Fail to call /returnOrderBook')
-  }
-
-  return body
+  return result
 }
 
 async function returnMarketTradeHistory(currencyPair) {
-  const {statusCode, body} = await request({
-    url: POLONIEX_API_HOST,
-    method: HttpMethods.GET,
-    qs: {
-      command: 'returnMarketTradeHistory',
-      currencyPair
-    }
-  })
+  const result = await _query('returnMarketTradeHistory', {currencyPair})
 
-  if (statusCode !== HttpStatusCodes.OK) {
-    throw new Error('Fail to call /returnMarketTradeHistory')
-  }
-
-  return body
+  return result
 }
 
 async function returnChartData(currencyPair, start, end, period) {
-  const {statusCode, body} = await request({
-    url: POLONIEX_API_HOST,
-    method: HttpMethods.GET,
-    qs: {
-      command: 'returnChartData',
-      currencyPair,
-      start,
-      end,
-      period
-    }
+  const result = await _query('returnMarketTradeHistory', {
+    command: 'returnChartData',
+    currencyPair,
+    start,
+    end,
+    period
   })
 
-  if (statusCode !== HttpStatusCodes.OK) {
-    throw new Error('Fail to call /returnChartData')
-  }
-
-  return body
+  return result
 }
 
 async function returnBalances() {}

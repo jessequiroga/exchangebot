@@ -10,7 +10,7 @@
     "test": "jest",
     "build": "babel src -d build",
     "lint-eslint": "eslint *.js",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged && jest"
   },
   "lint-staged": {
     "*.js": [
